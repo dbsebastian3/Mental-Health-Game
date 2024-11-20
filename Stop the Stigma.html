@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Break the Stigma&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-family: Arial, sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>canvas {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: block;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: black; /* Background remains black */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#game-over {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>position: fixed;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>top: 50%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>left: 50%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>transform: translate(-50%, -50%);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: rgba(0, 0, 0, 0.8);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: white;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#game-over button {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: #007bff;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: white;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 10px 20px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 5px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;canvas id="gameCanvas"&gt;&lt;/canvas&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="game-over"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1 id="result"&gt;&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button onclick="startGame()"&gt;Play Again&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const canvas = document.getElementById("gameCanvas");</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const ctx = canvas.getContext("2d");</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>canvas.width = window.innerWidth;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>canvas.height = window.innerHeight;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>let player, items, score, gameOver, keysPressed;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const positivePhrases = [</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"It's OK to ask for help",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Mental health matters",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"You are not alone",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Therapy is strength",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const negativeStereotypes = [</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Mental health isn't real",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Just toughen up",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"You're overreacting",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Only weak people need help",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function resetGame() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>player = { x: canvas.width / 2, y: canvas.height - 80, size: 40, speed: 5 }; // Player size remains</p>
+<p class="p1"><span class="Apple-converted-space">      </span>items = [];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>score = 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gameOver = false;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>keysPressed = {};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>for (let i = 0; i &lt; 12; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>items.push({</p>
+<p class="p1"><span class="Apple-converted-space">          </span>x: Math.random() * canvas.width,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>y: Math.random() * canvas.height - canvas.height,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>size: 25, // Smaller orbs</p>
+<p class="p1"><span class="Apple-converted-space">          </span>type: Math.random() &gt; 0.5 ? "positive" : "negative",</p>
+<p class="p1"><span class="Apple-converted-space">          </span>text:</p>
+<p class="p1"><span class="Apple-converted-space">            </span>Math.random() &gt; 0.5</p>
+<p class="p1"><span class="Apple-converted-space">              </span>? positivePhrases[Math.floor(Math.random() * positivePhrases.length)]</p>
+<p class="p1"><span class="Apple-converted-space">              </span>: negativeStereotypes[Math.floor(Math.random() * negativeStereotypes.length)],</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function drawPlayer() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>ctx.fillStyle = "#007bff";</p>
+<p class="p1"><span class="Apple-converted-space">      </span>ctx.beginPath();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>ctx.fill();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function drawItems() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>items.forEach((item) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.fillStyle = item.type === "positive" ? "blue" : "red";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.beginPath();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.arc(item.x, item.y, item.size, 0, Math.PI * 2);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.fill();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.fillStyle = "white";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.font = "14px Arial"; // Adjusted font size for smaller orbs</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.textAlign = "center";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.fillText(item.text, item.x, item.y + 5);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function updateItems() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>items.forEach((item) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>item.y += 3;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (item.y &gt; canvas.height) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>item.y = -40;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>item.x = Math.random() * canvas.width;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (</p>
+<p class="p1"><span class="Apple-converted-space">          </span>Math.hypot(player.x - item.x, player.y - item.y) &lt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>player.size + item.size</p>
+<p class="p1"><span class="Apple-converted-space">        </span>) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>if (item.type === "positive") {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>score++;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>item.y = -40;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>item.x = Math.random() * canvas.width;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gameOver = true;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("result").textContent = "Game Over! Don't let stigma win!";</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (score &gt;= 10) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>gameOver = true;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("result").textContent = "You Win! Stigma reduced!";</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function handlePlayerMovement() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (keysPressed["ArrowLeft"] &amp;&amp; player.x - player.size &gt; 0) player.x -= player.speed;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (keysPressed["ArrowRight"] &amp;&amp; player.x + player.size &lt; canvas.width) player.x += player.speed;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (keysPressed["ArrowUp"] &amp;&amp; player.y - player.size &gt; 0) player.y -= player.speed;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (keysPressed["ArrowDown"] &amp;&amp; player.y + player.size &lt; canvas.height) player.y += player.speed;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function gameLoop() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>ctx.clearRect(0, 0, canvas.width, canvas.height);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>handlePlayerMovement();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>drawPlayer();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>drawItems();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>updateItems();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (!gameOver) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>requestAnimationFrame(gameLoop);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("game-over").style.display = "block";</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>window.addEventListener("keydown", (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>keysPressed[e.key] = true;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>window.addEventListener("keyup", (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>keysPressed[e.key] = false;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function startGame() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("game-over").style.display = "none";</p>
+<p class="p1"><span class="Apple-converted-space">      </span>resetGame();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gameLoop();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>startGame();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
